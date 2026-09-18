@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense &amp; Budget Visualizer</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <script
+    src="https://cdn.jsdelivr.net/npm/chart.js"
+    onerror="window._chartJsLoadError = true; if (typeof window._onChartLoadError === 'function') { window._onChartLoadError(); }"
+  ></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <div id="app" data-view="main">
+
+    <!-- ── Header ──────────────────────────────────────────── -->
+    <header class="app-header">
+      <h1 class="app-title">Expense &amp; Budget Visualizer</h1>
+      <button
+        id="theme-toggle"
+        type="button"
+        aria-label="Switch to dark mode"
+      >🌙</button>
+    </header>
+
+    <!-- ── View Navigation ──────────────────────────────────── -->
+    <nav class="view-nav" aria-label="View navigation">
+      <button type="button" class="nav-btn nav-btn--main" data-view-target="main" aria-current="true">
+        Main
+      </button>
+      <button type="button" class="nav-btn nav-btn--summary" data-view-target="summary">
+        Monthly Summary
+      </button>
+    </nav>
+
+    <!-- ── Main View ─────────────────────────────────────────── -->
+    <main id="main-view" class="view" aria-label="Main view">
+
+      <!-- Balance Display -->
+      <section id="balance-display" aria-label="Total balance">
+        <h2 class="balance-label">Total Spent</h2>
+        <p class="balance-amount">$0.00</p>
+      </section>
+
+      <!-- Transaction Input Form -->
+      <section id="transaction-form-section" aria-label="Add transaction">
+        <h2>Add Transaction</h2>
+        <form id="transaction-form" novalidate>
+          <div class="field-group">
+            <label for="txn-name">Item Name</label>
+            <input
+              id="txn-name"
+              name="name"
+              type="text"
+              maxlength="100"
+              autocomplete="off"
+              placeholder="e.g. Coffee"
+              aria-describedby="txn-name-error"
+            />
+            <span id="txn-name-error" class="field-error" role="alert" aria-live="polite"></span>
+          </div>
+
+          <div class="field-group">
+            <label for="txn-amount">Amount</label>
+            <input
+              id="txn-amount"
+              name="amount"
+              type="number"
+              min="0.01"
+              max="999999999.99"
+              step="0.01"
+              placeholder="0.00"
+              aria-describedby="txn-amount-error"
+            />
+            <span id="txn-amount-error" class="field-error" role="alert" aria-live="polite"></span>
+          </div>
+
+          <div class="field-group">
+            <label for="txn-category">Category</label>
+            <select
+              id="txn-category"
+              name="category"
+              aria-describedby="txn-category-error"
+            >
+              <!-- Populated by renderCategoryOptions() -->
+            </select>
+            <span id="txn-category-error" class="field-error" role="alert" aria-live="polite"></span>
+          </div>
+
+          <button type="submit" class="btn btn--primary">+ Add Transaction</button>
+        </form>
+      </section>
+
+      <!-- Transaction List -->
+      <section id="transaction-list-section" aria-label="Transaction list">
+        <h2>Transactions</h2>
+        <ul id="transaction-list" aria-label="Transactions">
+          <!-- Populated by renderTransactionList() -->
+          <li class="empty-state">No transactions yet.</li>
+        </ul>
+      </section>
+
+      <!-- Pie Chart -->
+      <section id="pie-chart-section" aria-label="Spending by category">
+        <h2>Spending by Category</h2>
+        <div id="pie-chart-canvas" class="chart-wrapper">
+          <canvas id="pie-chart" role="img" aria-label="Pie chart of spending by category"></canvas>
+        </div>
+        <!-- CDN error banner (hidden until triggered by init()) -->
+        <div id="chart-error-banner" class="error-banner" hidden>
+          A required dependency (Chart.js) could not be loaded. The pie chart is unavailable.
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ── Summary View ───────────────────────────────────────── -->
+    <section id="monthly-summary" class="view" aria-label="Monthly summary">
+      <h2>Monthly Summary</h2>
+      <div id="monthly-summary-content">
+        <!-- Populated by renderMonthlySummary() -->
+        <p class="empty-state">No transactions available.</p>
+      </div>
+    </section>
+
+    <!-- ── Category Manager ───────────────────────────────────── -->
+    <aside id="category-manager" aria-label="Category manager">
+      <h2>Custom Categories</h2>
+      <form id="category-form" novalidate>
+        <div class="field-group">
+          <label for="category-input">Category Name</label>
+          <input
+            id="category-input"
+            name="categoryName"
+            type="text"
+            maxlength="50"
+            autocomplete="off"
+            placeholder="New category…"
+            aria-describedby="category-input-error"
+          />
+          <span id="category-input-error" class="field-error" role="alert" aria-live="polite"></span>
+        </div>
+        <button type="submit" class="btn btn--secondary">Add Category</button>
+      </form>
+    </aside>
+
+    <!-- ── Toast Notification ─────────────────────────────────── -->
+    <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  </div><!-- /#app -->
+</body>
+</html>
